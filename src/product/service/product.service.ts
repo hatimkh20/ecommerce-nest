@@ -26,10 +26,13 @@ export class ProductService {
   }
 
   getAllProducts(): Promise<Product[]> {
-    return this.productRepository.find();
+    return this.productRepository.find({ relations: ['images'] });
   }
 
   getById(id: number): Promise<Product> {
-    return this.productRepository.findOne({ where: { id: id } });
+    return this.productRepository.findOne({
+      where: { id },
+      relations: ['images'],
+    });
   }
 }

@@ -12,6 +12,9 @@ export class Product {
   @Column()
   price: number;
 
-  @OneToMany(() => ProductImage, (image) => image.product)
+  @OneToMany(() => ProductImage, (image) => image.product, {
+    cascade: true,
+    eager: true,
+  })
   images: ProductImage[];
 }
