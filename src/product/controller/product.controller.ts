@@ -3,7 +3,7 @@ import { ProductService } from '../service/product.service';
 import { ProductDTO } from '../dto/product.dto';
 import { Product } from '../entities/product.entity';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 
 @ApiTags('product')
 @Controller('product')
