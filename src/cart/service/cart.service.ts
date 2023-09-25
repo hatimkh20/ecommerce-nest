@@ -55,10 +55,6 @@ export class CartService {
   }
 
   async removeFromCart(cartId: number, productId: number): Promise<Cart> {
-    console.log(
-      `Attempting to remove product ${productId} from cart ${cartId}`,
-    );
-
     const cart = await this.cartRepository.findOne({
       where: { id: cartId },
       relations: ['items', 'items.product'],
@@ -66,39 +62,25 @@ export class CartService {
 
     if (!cart) throw new NotFoundException('Cart not found');
 
-    console.log('Cart Found:', cart);
-    console.log(
-      'Cart Items:',
-      cart.items.map((item) => item.product.id),
-    );
-
     const itemToRemove = cart.items.find(
       (item) => item.product.id == productId,
     );
 
     if (!itemToRemove) {
-      console.error(`Product ${productId} not found in cart ${cartId}`);
       throw new NotFoundException('Product not found in cart');
     }
-
-    console.log('Item to Remove Found:', itemToRemove);
-
     cart.items = cart.items.filter((item) => item.product.id != productId);
 
     try {
       await this.cartRepository.removeItem(itemToRemove);
-      console.log('Item Removed Successfully');
     } catch (error) {
-      console.error('Error removing item from cart:', error);
       throw new InternalServerErrorException('Error removing item from cart');
     }
 
     try {
       const updatedCart = await this.cartRepository.save(cart);
-      console.log('Cart Saved Successfully:', updatedCart);
       return updatedCart;
     } catch (error) {
-      console.error('Error saving cart:', error);
       throw new InternalServerErrorException('Error saving cart');
     }
   }
@@ -123,14 +105,6 @@ export class CartService {
     });
 
     if (!cart) throw new NotFoundException('Cart not found');
-
-    console.log(
-      'Cart Items:',
-      cart.items.map((item) => ({
-        itemId: item.id,
-        productId: item.product.id,
-      })),
-    );
 
     const itemToChange = cart.items.find(
       (item) => item.product.id == productId,
