@@ -1,9 +1,10 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserRepository } from '../repository/user.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserDTO } from '../dto/user.dto';
 import { User } from '../entities/user.entity';
+import { error } from 'console';
 
 @Injectable()
 export class UserService {
@@ -16,6 +17,9 @@ export class UserService {
     const hashedPassword = await bcrypt.hash(userDTO.password, 10);
     userDTO.password = hashedPassword;
     const userEntity = new User();
+    if(this.findUserByUsername(userDTO.username)){
+      throw new InternalServerErrorException("User already exist with this user name");
+    }
     Object.assign(userEntity, userDTO);
     return this.userRepository.save(userEntity);
   }

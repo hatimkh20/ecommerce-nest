@@ -18,7 +18,12 @@ export class AuthService {
   ) {}
 
   async register(userDTO: UserDTO) {
-    this.userService.register(userDTO);
+    try {
+       await this.userService.register(userDTO);
+    } catch (error) {
+      return error.message;
+    }
+    
   }
 
   async login(userDTO: UserDTO) {
